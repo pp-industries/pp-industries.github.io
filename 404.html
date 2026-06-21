@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | P.P. Industries</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Dedicated Layout adjustments for the Error Viewport */
+        .error-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-main);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .error-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            line-height: 1;
+            color: rgba(123, 104, 89, 0.15); /* Soft premium taupe watermark effect */
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        .error-content h1 {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+        }
+
+        .error-content p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .error-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Ambient geometric background elements for an industrial touch */
+        .ambient-shape {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: var(--bg-surface);
+            border-radius: 50%;
+            top: -10%;
+            right: -5%;
+            z-index: 1;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-wrapper">
+        <div class="ambient-shape"></div>
+        
+        <div class="error-content">
+            <!-- Large Styled Structural Watermark -->
+            <div class="error-code">404</div>
+            
+            <h1>Specification Sheet Not Found</h1>
+            <p>The routing configuration or packaging asset path you are looking for does not exist or has been relocated within our global network directory.</p>
+            
+            <div class="error-actions">
+                <!-- Primary Action Routing back to landing index -->
+                <a href="index.html" class="btn btn-primary">Return to Homepage</a>
+                <a href="index.html#contact" class="btn btn-secondary">Contact Desk</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
