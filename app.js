@@ -1,15 +1,12 @@
-/**
- * P.P. Industries - formspree logic
- * Built to handle core interactions and secure API form routing.
- */
-
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     
     // --- Dom Element Cache ---
     const elements = {
         header: document.querySelector('.main-header'),
         mobileToggle: document.querySelector('.mobile-nav-toggle'),
-        navLinks: document.querySelector('.nav-links')
+        navLinks: document.querySelector('.nav-links'),
+        featuredGrid: document.getElementById('featured-products-grid'), // For Home view
+        allProductsGrid: document.getElementById('all-products-grid')     // For Catalog view
     };
 
     // --- Window Scroll Controller ---
@@ -30,13 +27,52 @@
     if (elements.mobileToggle) {
         elements.mobileToggle.addEventListener('click', () => {
             elements.navLinks.classList.toggle('active');
-            
-            // Animate hamburger to an 'X' (optional visual feedback)
-            elements.mobileToggle.classList.toggle('is-open');
         });
     }
 
-    // --- Utility Functions for Cookie Management ---
+    // --- Dynamic JSON Product Ingestion Subsystem ---
+    async function loadProductCatalog() {
+        try {
+            const response = await fetch('products.json');
+            if (!response.ok) throw new Error("Failed to load products database file.");
+            
+            const productsList = await response.json();
+
+            // Function to generate the HTML string structure for a card card component
+            const createProductCard = (product) => `
+                <div class="product-card">
+                    <div class="product-img-wrapper">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <span class="prod-code">Code: ${product.code}</span>
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <a href="#contact" class="btn-text">Request Custom Mold &rarr;</a>
+                    </div>
+                </div>
+            `;
+
+            // Stream Type A: Inject Top 3 Featured items if on home page view
+            if (elements.featuredGrid) {
+                const featuredItems = productsList.slice(0, 3);
+                elements.featuredGrid.innerHTML = featuredItems.map(createProductCard).join('');
+            }
+
+            // Stream Type B: Inject the entire file collection if on full catalog view
+            if (elements.allProductsGrid) {
+                elements.allProductsGrid.innerHTML = productsList.map(createProductCard).join('');
+            }
+
+        } catch (error) {
+            console.error("Catalog Ingestion Pipeline Interruption:", error);
+            const fallbackMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Catalog loading down temporarily for maintenance. Please access specifications via direct PDF.</p>`;
+            if (elements.featuredGrid) elements.featuredGrid.innerHTML = fallbackMsg;
+            if (elements.allProductsGrid) elements.allProductsGrid.innerHTML = fallbackMsg;
+        }
+    }
+
+    // --- Cookie Management Functions ---
     function setCookie(name, value, days) {
         let expires = "";
         if (days) {
@@ -66,15 +102,13 @@
 
         if (!form || !statusAlert) return;
 
-        // 1. Intercept cookie verification state to block duplicate submissions
         if (getCookie("pp_rfp_submitted") === "true") {
             statusAlert.style.display = "block";
-            statusAlert.style.backgroundColor = "#F4F0DD"; // Brand Cream
-            statusAlert.style.color = "#7B6859";           // Brand Taupe
+            statusAlert.style.backgroundColor = "#F4F0DD"; 
+            statusAlert.style.color = "#7B6859";           
             statusAlert.style.borderColor = "#7B6859";
-            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering desk is reviewing your details! For additional details, kindly mail - ppind79@gmail.com";
+            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering desk is reviewing your details!";
             
-            // Cleanly freeze user interaction fields
             Array.from(form.elements).forEach(element => element.disabled = true);
             if (submitBtn) {
                 submitBtn.innerText = "Inquiry Already Submitted";
@@ -84,11 +118,9 @@
             return;
         }
 
-        // 2. Form Submission Management Loop
         form.addEventListener("submit", async (event) => {
             event.preventDefault(); 
 
-            // Visually freeze interactive state elements immediately
             submitBtn.innerText = "Sending Inquiry...";
             submitBtn.disabled = true;
             statusAlert.style.display = "none"; 
@@ -96,7 +128,6 @@
             const formData = new FormData(form);
 
             try {
-                // Pointing directly to your active Formspree container path
                 const response = await fetch("https://formspree.io/f/xzdnryvj", {
                     method: "POST",
                     body: formData,
@@ -105,52 +136,45 @@
                     }
                 });
 
-                // Case A: Delivery Successful (Matches clean light visual alerts)
                 if (response.ok) {
                     statusAlert.style.display = "block";
-                    statusAlert.style.backgroundColor = "#E8F0E8"; // Emerald White
-                    statusAlert.style.color = "#1E4620";           // Deep Forest Green
+                    statusAlert.style.backgroundColor = "#E8F0E8"; 
+                    statusAlert.style.color = "#1E4620";           
                     statusAlert.style.borderColor = "#C3E6CB";
                     statusAlert.innerHTML = "Thank you! Your inquiry has been sent successfully. Our team will contact you shortly.";
 
-                    // Drop persistent tracking cookie into user session (valid for 365 days)
                     setCookie("pp_rfp_submitted", "true", 365);
 
-                    // Block further programmatic form resubmissions
                     Array.from(form.elements).forEach(element => element.disabled = true);
                     submitBtn.innerText = "Inquiry Sent";
                     submitBtn.style.opacity = "0.5";
-                } 
-                
-                // Case B: Explicit API Field Validation Failure
-                else {
+                } else {
                     const responseData = await response.json();
                     if (responseData.errors) {
                         statusAlert.innerHTML = "Submission Error: " + responseData.errors.map(err => err.message).join(", ");
                     } else {
                         statusAlert.innerHTML = "Oops! System rejected this request. Code: " + response.status;
                     }
-                    throw new Error("Formspree rejected transmission package.");
+                    throw new Error("Formspree rejected package.");
                 }
 
             } catch (error) {
-                // Case C: Physical Network Timeout / Connection Dropped
                 statusAlert.style.display = "block";
-                statusAlert.style.backgroundColor = "#FDF2F2"; // Earthy Crimson
-                statusAlert.style.color = "#9B1C1C";           // High-contrast Warning Red
+                statusAlert.style.backgroundColor = "#FDF2F2"; 
+                statusAlert.style.color = "#9B1C1C";           
                 statusAlert.style.borderColor = "#FDE8E8";
                 
                 if (!statusAlert.innerHTML || statusAlert.innerHTML.includes("successfully")) {
                     statusAlert.innerHTML = "Network connection issue. Please check your internet connectivity and try again.";
                 }
                 
-                // Safely restore actionable button states for re-attempts
                 submitBtn.innerText = "Submit Technical RFP";
                 submitBtn.disabled = false;
             }
         });
     }
 
-    // Execute application subsystems
+    // Initialize Subsystems
+    loadProductCatalog();
     initializeContactForm();
 });

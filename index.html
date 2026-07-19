@@ -142,7 +142,7 @@
         </div>
     </section>
 
-    <section id="products" class="products-section">
+    <!-- <section id="products" class="products-section">
         <div class="container">
             <div class="section-header">
                 <h2>Engineered Product Catalog</h2>
@@ -184,7 +184,27 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+
+    <!-- Products Showcase Section (Home Page) -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Product Catalog</h2>
+                <p>Explore our high-demand core product profiles. Select options for standard batch sizes or complete structural modifications.</p>
+            </div>
+            
+            <!-- Target container where app.js dynamically streams ONLY the top 3 featured products -->
+            <div id="featured-products-grid" class="products-grid"></div>
+
+            <!-- Highly accessible navigation cluster to load all elements -->
+            <div style="text-align: center; margin-top: 4rem;">
+                <a href="products.html" class="btn btn-secondary" style="padding: 1rem 2.5rem; font-weight: 600;">
+                    View All Products & Custom Capabilities &rarr;
+                </a>
+            </div>
+        </div>
+    </section>    
 
     <section id="contact" class="contact-section">
         <div class="container contact-grid">

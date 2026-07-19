@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Product Catalog | P.P. Industries</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="media/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Shared Header -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html#home" class="logo-area">
+                <img src="media/logo.svg" alt="P.P. Industries Monogram" class="logo-icon">
+                <div class="logo-text">
+                    <span class="brand-name">P.P. INDUSTRIES</span>
+                    <span class="tagline">Granules to Greatness</span>
+                </div>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#home">Home</a>
+                <a href="index.html#about">About</a>
+                <a href="index.html#capabilities">Capabilities</a>
+                <a href="#" class="active" style="color: var(--primary-accent);">Products</a>
+                <a href="#contact" class="btn btn-primary">Inquire Now</a>
+            </nav>
+            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Section Header -->
+    <section class="products-section" style="padding-top: 160px; min-height: 60vh;">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Dynamic Production Line</span>
+                <h2>Complete Packaging Inventory</h2>
+                <p>Browse through our complete catalog of precision-molded rigid solutions. Select a series variant below to trigger a custom production analysis request.</p>
+            </div>
+            
+            <!-- Target container where app.js automatically injects ALL products from JSON -->
+            <div id="all-products-grid" class="products-grid"></div>
+        </div>
+    </section>
+
+    <!-- Shared RFP Submission Form Component -->
+    <section id="contact" class="contact-section">
+        <div class="container contact-grid">
+            <div class="contact-details">
+                <h2>Initiate Custom Mold Processing Request</h2>
+                <p>Provide your specific wall-thickness limits, weight sizing parameters, or target monthly volume metrics for immediate calculation.</p>
+                <div class="info-blocks">
+                    <div class="info-block">
+                        <h5>Plant Desk</h5>
+                        <p>Janori Industrial Area, Nashik, MH, India - 422008</p>
+                    </div>
+                    <div class="info-block">
+                        <h5>Secure Channels</h5>
+                        <p><a href="mailto:ppind79@gmail.com">ppind79@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form-wrapper">
+                <h3>Technical Sizing Request</h3>
+                <form id="rfpForm">
+                    <div class="form-group">
+                        <label for="clientName">Full Name / Company</label>
+                        <input type="text" id="clientName" name="name" required placeholder="John Doe / ABC Corp">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientEmail">Corporate Email</label>
+                        <input type="email" id="clientEmail" name="email" required placeholder="name@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="industryType">Target Sector</label>
+                        <select id="industryType" name="industry">
+                            <option value="agrochemical">Agrochemical / Specialty Fluid</option>
+                            <option value="pharmaceutical">Pharmaceutical / Nutraceutical</option>
+                            <option value="cosmetic">Cosmetics & Personal Care</option>
+                            <option value="industrial">Industrial Chemicals & Lubricants</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Estimated Volume & Specs</label>
+                        <textarea id="message" name="message" rows="4" required placeholder="Specify selected product code numbers along with estimated run lengths..."></textarea>
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-primary btn-block">Submit Technical RFP</button>
+                    <div id="formStatus" style="display: none; margin-top: 20px; padding: 15px; border-radius: 4px; text-align: center; font-size: 0.95rem; border: 1px solid transparent;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container footer-bottom">
+            <p>&copy; 2026 P.P. Industries. All Rights Reserved. | Granules to Greatness</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
