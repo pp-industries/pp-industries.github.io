@@ -3,21 +3,21 @@
  * Built to handle core interactions and secure API form routing.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     
-    // --- Dom Element Cache (Updated) ---
+    // --- Dom Element Cache ---
     const elements = {
         header: document.querySelector('.main-header'),
         mobileToggle: document.querySelector('.mobile-nav-toggle'),
-        navLinks: document.querySelector('.nav-links') // Added for mobile menu
+        navLinks: document.querySelector('.nav-links')
     };
 
-    // --- Window Scroll Controller (Fixed for Light Theme) ---
+    // --- Window Scroll Controller ---
     const handleWindowScroll = () => {
         if (window.scrollY > 40) {
             elements.header.style.padding = '0.5rem 0';
-            elements.header.style.backgroundColor = 'rgba(255, 251, 244, 0.98)'; // Warm White
-            elements.header.style.boxShadow = '0 4px 12px rgba(123, 104, 89, 0.1)'; // Subtle shadow
+            elements.header.style.backgroundColor = 'rgba(255, 251, 244, 0.98)';
+            elements.header.style.boxShadow = '0 4px 12px rgba(123, 104, 89, 0.1)';
         } else {
             elements.header.style.padding = '0';
             elements.header.style.backgroundColor = 'rgba(255, 251, 244, 0.95)';
@@ -36,7 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Formspree Integration & Browser Caching ---
+    // --- Utility Functions for Cookie Management ---
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Strict";
+    }
+
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // --- Core Formspree Integration Lifecycle ---
     function initializeContactForm() {
         const form = document.getElementById("rfpForm");
         const statusAlert = document.getElementById("formStatus");
@@ -44,16 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!form || !statusAlert) return;
 
-        // 1. Check browser cache to prevent duplicate entries
-        if (localStorage.getItem("pp_form_submitted") === "true") {
+        // 1. Intercept cookie verification state to block duplicate submissions
+        if (getCookie("pp_rfp_submitted") === "true") {
             statusAlert.style.display = "block";
-            // Updated to match the Cream/Taupe aesthetic
-            statusAlert.style.backgroundColor = "#F4F0DD"; 
-            statusAlert.style.color = "#7B6859"; 
+            statusAlert.style.backgroundColor = "#F4F0DD"; // Brand Cream
+            statusAlert.style.color = "#7B6859";           // Brand Taupe
             statusAlert.style.borderColor = "#7B6859";
-            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering team is reviewing your details.";
+            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering desk is reviewing your details!";
             
-            // Lock form inputs cleanly
+            // Cleanly freeze user interaction fields
             Array.from(form.elements).forEach(element => element.disabled = true);
             if (submitBtn) {
                 submitBtn.innerText = "Inquiry Already Submitted";
@@ -63,20 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. Intercept submission using a native Promise-based handler
+        // 2. Form Submission Management Loop
         form.addEventListener("submit", async (event) => {
             event.preventDefault(); 
 
-            // Update button state immediately
-            submitBtn.innerText = "Transmitting...";
+            // Visually freeze interactive state elements immediately
+            submitBtn.innerText = "Sending Inquiry...";
             submitBtn.disabled = true;
             statusAlert.style.display = "none"; 
 
             const formData = new FormData(form);
 
             try {
-                // Direct backend POST query to Formspree
-                const response = await fetch("https://formspree.io/f/xeewyyob", {
+                // Pointing directly to your active Formspree container path
+                const response = await fetch("https://formspree.io/f/xzdnryvj", {
                     method: "POST",
                     body: formData,
                     headers: {
@@ -84,52 +105,52 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Handle successful HTTP 200 responses
+                // Case A: Delivery Successful (Matches clean light visual alerts)
                 if (response.ok) {
                     statusAlert.style.display = "block";
-                    // Updated to a soft earthy green that fits the light theme
-                    statusAlert.style.backgroundColor = "#E8F0E8"; 
-                    statusAlert.style.color = "#27ae60";
+                    statusAlert.style.backgroundColor = "#E8F0E8"; // Emerald White
+                    statusAlert.style.color = "#1E4620";           // Deep Forest Green
                     statusAlert.style.borderColor = "#C3E6CB";
-                    statusAlert.innerHTML = "Transmission successful. Your technical RFP has been received.";
+                    statusAlert.innerHTML = "Thank you! Your inquiry has been sent successfully. Our team will contact you shortly.";
 
-                    // Save submission flag to browser memory cache
-                    localStorage.setItem("pp_form_submitted", "true");
+                    // Drop persistent tracking cookie into user session (valid for 365 days)
+                    setCookie("pp_rfp_submitted", "true", 365);
 
-                    // Lock fields
+                    // Block further programmatic form resubmissions
                     Array.from(form.elements).forEach(element => element.disabled = true);
-                    submitBtn.innerText = "RFP Secured";
+                    submitBtn.innerText = "Inquiry Sent";
                     submitBtn.style.opacity = "0.5";
                 } 
-                // Catch validation or system errors
+                
+                // Case B: Explicit API Field Validation Failure
                 else {
                     const responseData = await response.json();
                     if (responseData.errors) {
-                        statusAlert.innerHTML = "Error: " + responseData.errors.map(err => err.message).join(", ");
+                        statusAlert.innerHTML = "Submission Error: " + responseData.errors.map(err => err.message).join(", ");
                     } else {
-                        statusAlert.innerHTML = "System rejected the request. Code: " + response.status;
+                        statusAlert.innerHTML = "Oops! System rejected this request. Code: " + response.status;
                     }
-                    throw new Error("Server rejected request");
+                    throw new Error("Formspree rejected transmission package.");
                 }
 
             } catch (error) {
+                // Case C: Physical Network Timeout / Connection Dropped
                 statusAlert.style.display = "block";
-                // Updated to a soft earthy red that fits the light theme
-                statusAlert.style.backgroundColor = "#FDF2F2"; 
-                statusAlert.style.color = "#eb5757";
+                statusAlert.style.backgroundColor = "#FDF2F2"; // Earthy Crimson
+                statusAlert.style.color = "#9B1C1C";           // High-contrast Warning Red
                 statusAlert.style.borderColor = "#FDE8E8";
                 
-                if (!statusAlert.innerHTML || statusAlert.innerHTML.includes("Transmission successful")) {
-                    statusAlert.innerHTML = "Network timeout. Please verify your connection and attempt transmission again.";
+                if (!statusAlert.innerHTML || statusAlert.innerHTML.includes("successfully")) {
+                    statusAlert.innerHTML = "Network connection issue. Please check your internet connectivity and try again.";
                 }
                 
-                // Re-enable button
+                // Safely restore actionable button states for re-attempts
                 submitBtn.innerText = "Submit Technical RFP";
                 submitBtn.disabled = false;
             }
         });
     }
 
-    // Initialize the form logic
+    // Execute application subsystems
     initializeContactForm();
 });
