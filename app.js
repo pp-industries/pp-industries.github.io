@@ -72,7 +72,7 @@
             statusAlert.style.backgroundColor = "#F4F0DD"; // Brand Cream
             statusAlert.style.color = "#7B6859";           // Brand Taupe
             statusAlert.style.borderColor = "#7B6859";
-            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering desk is reviewing your details!";
+            statusAlert.innerHTML = "You have already submitted an inquiry. Our engineering desk is reviewing your details! For additional details, kindly mail - ppind79@gmail.com";
             
             // Cleanly freeze user interaction fields
             Array.from(form.elements).forEach(element => element.disabled = true);
