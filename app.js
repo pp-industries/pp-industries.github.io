@@ -65,8 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (error) {
+            // This prints the exact error details to your browser's Inspect -> Console tool
             console.error("Catalog Ingestion Pipeline Interruption:", error);
-            const fallbackMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Catalog loading down temporarily for maintenance. Please access specifications via direct PDF.</p>`;
+            
+            const fallbackMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem 0;">Catalog loading down temporarily for maintenance. Please access specifications via direct PDF.</p>`;
             if (elements.featuredGrid) elements.featuredGrid.innerHTML = fallbackMsg;
             if (elements.allProductsGrid) elements.allProductsGrid.innerHTML = fallbackMsg;
         }

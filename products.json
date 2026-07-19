@@ -2,31 +2,31 @@
     {
         "code": "P.P.1",
         "name": "Vertical Bottle Series",
-        "image": "media/products/vertical-bottle.jpg",
+        "image": "media/products/vertical-bottles.jpeg",
         "description": "Optimized inline architecture for seamless auto-filling lines. Available variants: 50ml to 1L configurations."
     },
     {
         "code": "P.P.2",
         "name": "Amway Shape Series",
-        "image": "media/products/amway-bottle.jpg",
+        "image": "media/products/amway-shape-bottles.jpeg",
         "description": "Ergonomic shoulder profile featuring robust impact-drop walls. Ideal for chemicals and concentrates."
     },
     {
         "code": "P.P.21",
         "name": "Heavy Industrial Jerry Cans",
-        "image": "media/products/jerry-can.jpg",
+        "image": "media/products/jerry-can.jpeg",
         "description": "Built for hazardous material compliance. High stack loading capacity up to 20-liter volumes."
     },
     {
         "code": "P.P.3",
         "name": "Cyzenda Bottle Series",
-        "image": "media/products/cyzenda-bottle.jpg",
+        "image": "media/products/cyzenda-bottle.jpeg",
         "description": "Heavy-duty specialty design built with strict volumetric tolerances for premium agrochemical concentrates."
     },
     {
         "code": "P.P.5",
         "name": "Standard Wide-Mouth Jars",
-        "image": "media/products/jar.jpg",
+        "image": "media/products/jar.jpeg",
         "description": "Excellent seal profile optimized for powder chemical compounds, tablet sorting, and pharmaceutical solid packing."
     }
 ]
